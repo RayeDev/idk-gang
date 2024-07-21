@@ -4,7 +4,8 @@ package;
 import android.content.Context;
 #end
 
-import funkin.backend.system.debug.FPSCounter;
+import debug.FPSCounter;
+
 import flixel.graphics.FlxGraphic;
 import flixel.FlxGame;
 import flixel.FlxState;
@@ -15,12 +16,7 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.display.StageScaleMode;
 import lime.app.Application;
-import funkin.menus.TitleState;
-import funkin.backend.scripts.CallbackHandler;
-import funkin.backend.system.ClientPrefs;
-import funkin.backend.system.Controls;
-import funkin.backend.assets.Achievements;
-import funkin.backend.system.Discord;
+import states.TitleState;
 
 #if linux
 import lime.graphics.Image;
@@ -106,7 +102,7 @@ class Main extends Sprite
 			game.height = Math.ceil(stageHeight / game.zoom);
 		}
 	
-		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
+		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(psychlua.CallbackHandler.call)); #end
 		Controls.instance = new Controls();
 		ClientPrefs.loadDefaultKeys();
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
