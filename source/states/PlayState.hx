@@ -59,6 +59,13 @@ import psychlua.HScript;
 import tea.SScript;
 #end
 
+typedef CamThing =
+{
+	DadStuff:Array<Int>,
+	BFStuff:Array<Int>,
+	GFStuff:Array<Int>
+}
+
 /**
  * This is where all the Gameplay stuff happens and is managed
  *
@@ -263,11 +270,15 @@ class PlayState extends MusicBeatState
 	// Callbacks for stages
 	public var startCallback:Void->Void = null;
 	public var endCallback:Void->Void = null;
+	
+	var camJSON:CamThing;
 
 	override public function create()
 	{
 		//trace('Playback Rate: ' + playbackRate);
 		Paths.clearStoredMemory();
+		
+		camJSON = tjson.TJSON.parse(Paths.getTextFromFile('images/CamMove.json'));
 
 		startCallback = startCountdown;
 		endCallback = endSong;
@@ -1664,6 +1675,42 @@ class PlayState extends MusicBeatState
 				openChartEditor();
 			else if (controls.justPressed('debug_2'))
 				openCharacterEditor();
+		}
+		
+		if(!isCameraOnForcedPos && !endingSong){
+			if(SONG.notes[curSection] != null){
+				if(!SONG.notes[curSection].mustHitSection){
+					switch(dad.animation.curAnim.name){
+						case "singLEFT" | "singLEFT-loop" | "singLEFT-alt":
+							camFollow.setPosition(dad.getMidpoint().x + 150 - camJSON.DadStuff[0], dad.getMidpoint().y - 100);
+						case "singRIGHT" | "singRIGHT-loop" | "singRIGHT-alt":
+							camFollow.setPosition(dad.getMidpoint().x + 150 + camJSON.DadStuff[0], dad.getMidpoint().y - 100);
+						case "singDOWN" | "singDOWN-loop" | "singDOWN-alt":
+							camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100 + camJSON.DadStuff[1]);
+						case "singUP" | "singUP-loop" | "singUP-alt":
+							camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100 - camJSON.DadStuff[1]);
+						case "idle" | "idle-alt" | "idle-loop" | "singLEFTmiss" | "singDOWNmiss" | "singUPmiss" | "singRIGHTmiss" | "danceLeft"| "danceRight":
+							camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
+					}
+					camFollow.x += dad.cameraPosition[0] + opponentCameraOffset[0];
+					camFollow.y += dad.cameraPosition[1] + opponentCameraOffset[1];
+				}else{
+					switch(boyfriend.animation.curAnim.name){
+						case "singLEFT" | "singLEFT-loop" | "singLEFT-alt":
+							camFollow.setPosition(boyfriend.getMidpoint().x - 100 - camJSON.BFStuff[0], boyfriend.getMidpoint().y - 100);
+						case "singRIGHT" | "singRIGHT-loop" | "singRIGHT-alt":
+							camFollow.setPosition(boyfriend.getMidpoint().x - 100 + camJSON.BFStuff[0], boyfriend.getMidpoint().y - 100);
+						case "singDOWN" | "singDOWN-loop" | "singDOWN-alt":
+							camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100 + camJSON.BFStuff[1]);
+						case "singUP" | "singUP-loop" | "singUP-alt":
+							camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100 - camJSON.BFStuff[1]);
+						case "idle" | "idle-alt" | "idle-loop" | "singLEFTmiss" | "singDOWNmiss" | "singUPmiss" | "singRIGHTmiss" | "danceLeft"| "danceRight":
+							camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
+					}
+					camFollow.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0];
+					camFollow.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1];
+				}
+			}
 		}
 
 		if (healthBar.bounds.max != null && health > healthBar.bounds.max)
