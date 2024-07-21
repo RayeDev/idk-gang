@@ -7,6 +7,8 @@ import flash.geom.Rectangle;
 import flixel.addons.ui.FlxUI.NamedString;
 import flixel.math.FlxRect;
 import flixel.util.FlxDestroyUtil;
+import flixel.util.FlxTimer;
+import flixel.text.FlxText.FlxTextAlign;
 
 /**
  * FlxInputText v1.11, ported to Haxe
@@ -22,7 +24,7 @@ import flixel.util.FlxDestroyUtil;
  * @link http://creativecommons.org/licenses/by/3.0/us/
  * 
  */
-class FlxInputText extends FlxText
+class FlxInputText extends flixel.text.FlxText
 {
 	public static inline var NO_FILTER:Int = 0;
 	public static inline var ONLY_ALPHA:Int = 1;
