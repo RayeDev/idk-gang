@@ -116,13 +116,13 @@ class MusicBeatState extends FlxUIState
 
 	private function updateBeat():Void
 	{
-		#if FLX_PITCH 
-		curBeat = Math.floor(curStep / 4 / FlxG.sound.music.pitch);
-		curDecBeat = curDecStep/4/FlxG.sound.music.pitch;
-		else
-		curBeat = Math.floor(curStep / 4);
-		curDecBeat = curDecStep/4;
-		#end
+		if (PlayState.isInPlayState){
+			curBeat = Math.floor(curStep / 4 / ClientPrefs.getGameplaySetting("songspeed"));
+			curDecBeat = curDecStep / 4 / ClientPrefs.getGameplaySetting("songspeed");
+		}else{
+			curBeat = Math.floor(curStep / 4);
+			curDecBeat = curDecStep / 4;
+		}
 	}
 
 	private function updateCurStep():Void
@@ -130,13 +130,13 @@ class MusicBeatState extends FlxUIState
 		var lastChange = Conductor.getBPMFromSeconds(Conductor.songPosition);
 
 		var shit = ((Conductor.songPosition - ClientPrefs.data.noteOffset) - lastChange.songTime) / lastChange.stepCrochet;
-		#if FLX_PITCH 
-		curDecStep = lastChange.stepTime + shit / FlxG.sound.music.pitch;
-		curStep = lastChange.stepTime + Math.floor(shit / FlxG.sound.music.pitch);
-		else
-		curDecStep = lastChange.stepTime + shit;
-		curStep = lastChange.stepTime + Math.floor(shit / FlxG.sound.music.pitch);
-		#end
+		if (PlayState.isInPlayState){
+			curDecStep = lastChange.stepTime + (shit / ClientPrefs.getGameplaySetting("songspeed"));
+			curStep = lastChange.stepTime + Math.floor(shit / ClientPrefs.getGameplaySetting("songspeed"));
+		}else{
+			curDecStep = lastChange.stepTime + (shit);
+			curStep = lastChange.stepTime + Math.floor(shit);
+		}
 	}
 
 	public static function switchState(nextState:FlxState = null) {

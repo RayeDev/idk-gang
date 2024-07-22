@@ -102,6 +102,9 @@ class PlayState extends MusicBeatState
 
 	//event variables
 	private var isCameraOnForcedPos:Bool = false;
+	
+	//needed
+	public static var isInPlayState:Bool = false;
 
 	public var boyfriendMap:Map<String, Character> = new Map<String, Character>();
 	public var dadMap:Map<String, Character> = new Map<String, Character>();
@@ -277,6 +280,8 @@ class PlayState extends MusicBeatState
 	{
 		//trace('Playback Rate: ' + playbackRate);
 		Paths.clearStoredMemory();
+		
+		isInPlayState = true;
 		
 		camJSON = tjson.TJSON.parse(Paths.getTextFromFile('images/CamMove.json'));
 
@@ -3091,6 +3096,7 @@ class PlayState extends MusicBeatState
 		Note.globalRgbShaders = [];
 		backend.NoteTypesConfig.clearNoteTypesData();
 		instance = null;
+		isInPlayState = false;
 		super.destroy();
 	}
 
